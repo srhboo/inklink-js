@@ -9,8 +9,8 @@ io.on("connection", function(socket) {
 
   // client.on("leave", handleLeave);
 
-  socket.on("message", message => {
-    io.emit("message", message);
+  socket.on("chatMessage", ({ message, nickname }) => {
+    io.emit("chatMessage", { message, nickname });
   });
 
   // client.on("chatrooms", handleGetChatrooms);
