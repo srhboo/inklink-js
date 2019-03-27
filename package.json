@@ -26,5 +26,11 @@
   ],
   "devDependencies": {
     "eslint-plugin-react-hooks": "^1.6.0"
+  },
+  "now": {
+    "name": "inklink-js",
+    "files": [
+      "build"
+    ]
   }
 }
