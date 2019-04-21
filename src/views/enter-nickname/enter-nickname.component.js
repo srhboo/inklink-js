@@ -1,10 +1,20 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { io } from "../../socket-client";
 
-export const EnterNickname = ({ setNickname }) => {
+export const EnterNickname = ({ setUser }) => {
   const [nicknameInput, updateNicknameInput] = useState("");
+  useEffect(() => {
+    io.registerOnReceiveAddUserSuccess(({ user }) => {
+      console.log("setting");
+      setUser(user);
+    });
+    return () => {
+      io.unregisterOnReceiveAddUserSuccess();
+    };
+  });
   const handleSubmit = e => {
     e.preventDefault();
-    setNickname(nicknameInput);
+    io.addUser({ nickname: nicknameInput, roomId: "lobby" });
   };
   return (
     <form onSubmit={handleSubmit}>

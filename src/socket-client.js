@@ -15,44 +15,67 @@ const unregisterOnReceiveChatMessage = () => {
   socket.off("chatMessage");
 };
 
-const sendChatMessage = ({ message, nickname }) => {
-  socket.emit("chatMessage", { message, nickname });
+const registerOnReceiveUsersOnline = onUsersOnlineReceived => {
+  socket.on("usersOnline", onUsersOnlineReceived);
 };
-// const test = function() {
-// function register(name) {
-//   socket.emit("register", name);
-// }
 
-// function join(chatroomName) {
-//   socket.emit("join", chatroomName);
-// }
+const unregisterOnReceiveUsersOnline = () => {
+  socket.off("usersOnline");
+};
 
-// function leave(chatroomName) {
-//   socket.emit("leave", chatroomName);
-// }
+const fetchGameRooms = () => {
+  socket.emit("gameRooms");
+};
 
-// function getChatrooms(cb) {
-//   socket.emit("chatrooms", null, cb);
-// }
+const registerOnReceiveGameRooms = onGameroomsReceived => {
+  socket.on("gameRooms", onGameroomsReceived);
+};
 
-// function getAvailableUsers(cb) {
-//   socket.emit("availableUsers", null, cb);
-// }
+const unregisterOnReceiveGameRooms = () => {
+  socket.off("gameRooms");
+};
 
-// return {
-// register,
-// join,
-// leave,
-// chatMessage,
-// getChatrooms,
-// getAvailableUsers,
-//     registerHandler,
-//     unregisterHandler
-//   };
-// };
+const sendChatMessage = ({ message, user }) => {
+  socket.emit("chatMessage", { message, user });
+};
+
+const addUser = ({ nickname, roomId }) => {
+  socket.emit("addUser", { nickname, roomId });
+};
+
+const registerOnReceiveAddUserSuccess = onAddUserSuccessReceived => {
+  socket.on("addUserSuccess", onAddUserSuccessReceived);
+};
+
+const unregisterOnReceiveAddUserSuccess = () => {
+  socket.off("addUserSuccess");
+};
+
+const joinRoom = ({ roomId }) => {
+  socket.emit("joinRoom", { roomId });
+};
+
+const registerOnJoinRoomSuccess = onAddUserSuccessReceived => {
+  socket.on("joinRoomSuccess", onAddUserSuccessReceived);
+};
+
+const unregisterOnJoinRoomSuccess = () => {
+  socket.off("joinRoomSuccess");
+};
 
 export const io = {
   registerOnReceiveChatMessage,
   unregisterOnReceiveChatMessage,
-  sendChatMessage
+  sendChatMessage,
+  registerOnReceiveUsersOnline,
+  unregisterOnReceiveUsersOnline,
+  addUser,
+  registerOnReceiveAddUserSuccess,
+  unregisterOnReceiveAddUserSuccess,
+  fetchGameRooms,
+  registerOnReceiveGameRooms,
+  unregisterOnReceiveGameRooms,
+  joinRoom,
+  registerOnJoinRoomSuccess,
+  unregisterOnJoinRoomSuccess
 };

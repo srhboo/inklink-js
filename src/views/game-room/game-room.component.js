@@ -1,40 +1,44 @@
 import React, { useState, useEffect } from "react";
 
-import { NicknameContext } from "../../App";
+import { UserContext } from "../../App";
 
 import { io } from "../../socket-client";
-export const GameRoom = () => {
+export const GameRoom = ({ roomId, name }) => {
   const [messageInput, updateMessageInput] = useState("");
   const [messageLog, updateMessageLog] = useState([]);
+
   useEffect(() => {
-    io.registerOnReceiveChatMessage(({ message, nickname }) => {
-      updateMessageLog([...messageLog, { message, nickname }]);
+    io.registerOnReceiveChatMessage(({ message, user }) => {
+      updateMessageLog([...messageLog, { message, user }]);
     });
     return () => {
       io.unregisterOnReceiveChatMessage();
     };
   }, [messageLog]);
 
-  const handleSubmit = nickname => e => {
+  const handleSubmit = user => e => {
     e.preventDefault();
-    io.sendChatMessage({ message: messageInput, nickname });
+    io.sendChatMessage({ message: messageInput, user });
     updateMessageInput("");
   };
 
   return (
-    <NicknameContext.Consumer>
-      {currentUserNickname => (
+    <UserContext.Consumer>
+      {currentUser => (
         <div>
-          <div>{`chatting as: ${currentUserNickname}`}</div>
+          <h3>{name}</h3>
+          <div>{`chatting as: ${currentUser.nickname}`}</div>
           <div>
             <ul>
-              {messageLog.map(({ message, nickname }) => (
-                <li>{`${nickname}: ${message}`}</li>
+              {messageLog.map(({ message, user }, i) => (
+                <li key={`${user ? user.userId : roomId}-${i}`}>{`${
+                  user ? `${user.nickname} :` : ""
+                } ${message}`}</li>
               ))}
             </ul>
           </div>
-          <form onSubmit={handleSubmit(currentUserNickname)}>
-            <label for="chat-message" />
+          <form onSubmit={handleSubmit(currentUser)}>
+            <label htmlFor="chat-message" />
             <input
               id="chat-message"
               type="text"
@@ -45,6 +49,6 @@ export const GameRoom = () => {
           </form>
         </div>
       )}
-    </NicknameContext.Consumer>
+    </UserContext.Consumer>
   );
 };

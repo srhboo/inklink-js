@@ -1,18 +1,32 @@
-import React, { Component, useState, useEffect } from "react";
+import React, { useState } from "react";
 import "./App.css";
 
-import { GameRoom } from "./views/game-room";
 import { EnterNickname } from "./views/enter-nickname";
+import { UsersOnline } from "./views/users-online";
+import { Lobby } from "./views/lobby";
 
-export const NicknameContext = React.createContext("");
+export const UserContext = React.createContext("");
 
 export const App = () => {
-  const [nickname, setNickname] = useState("");
-  return nickname ? (
-    <NicknameContext.Provider value={nickname}>
-      <GameRoom />
-    </NicknameContext.Provider>
-  ) : (
-    <EnterNickname setNickname={setNickname} />
+  const [user, setUser] = useState({
+    nickname: null,
+    userId: null,
+    currentRoomId: "lobby"
+  });
+  const setCurrentRoomId = currentRoomId => {
+    setUser({ ...user, currentRoomId });
+  };
+  const { nickname, userId } = user;
+  return (
+    <>
+      <UsersOnline />
+      {nickname && userId ? (
+        <UserContext.Provider value={user}>
+          <Lobby user={user} setCurrentRoomId={setCurrentRoomId} />
+        </UserContext.Provider>
+      ) : (
+        <EnterNickname setUser={setUser} />
+      )}
+    </>
   );
 };
